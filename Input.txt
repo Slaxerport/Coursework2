@@ -1,1 +1,1 @@
-Login: dh3 Password: 123 Money: 234.56 Serviced clients: 3 Salary: 23.45
+Login: dh3 Password: 123 Money: 234.56 Serviced clients: 3

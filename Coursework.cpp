@@ -36,7 +36,9 @@ void enter_menu()
     int x = 1;
     string login, password;
     list<Salesman>::iterator it = salesmen_list.begin();
+    Buyer b("Input_buyer.txt");
     while (x) {
+        system("cls");
         cout << "1.Enter as a buyer\n"
             << "2.Enter as a salesman\n"
             << "3.Enter as a new salesman\n"
@@ -44,6 +46,9 @@ void enter_menu()
             << "0.Exit\n";
         cin >> x;
         switch (x) {
+        case 1:
+            b.menu(buyers_queue, "product_input.txt");
+            break;
         case 2:
             Salesman::salesman_enter(salesmen_list, buyers_queue);
             break;

@@ -40,8 +40,8 @@ void Salesman::file_input(list<Salesman>& l, string path)
         else if(ignore=="Password:") in >> password;
         else if(ignore=="Money:") in >> money;
         else if(ignore=="Serviced") in >> ignore >> service_clients;
-        else if(ignore=="Salary:") in >> salary;
-
+        hash = Hash(password);
+        salary = service_clients * 50;
     }
     in.close();
     l.push_back(*this);
@@ -81,6 +81,10 @@ void Salesman::set_password(string& password)
     this->password = password;
 }
 
+string Salesman::get_hash()
+{
+    return hash;
+}
 void Salesman::salesman_enter(list<Salesman>& l, Queue& q)
 {
     string login, password;
@@ -90,9 +94,10 @@ void Salesman::salesman_enter(list<Salesman>& l, Queue& q)
     cin >> login;
     cout << "Enter password: ";
     cin >> password;
-    for (; i < l.size(); i++, it++) {
-        if ((login == (*it).get_login()) && (password == (*it).get_password())) {
+    for (; it != l.end(); i++, it++) {
+        if ((login == (*it).login) && (Salesman::Hash(password) == (*it).get_hash())) {
             cout << "Logon successful!" << endl;
+            system("pause");
             it->menu(l, q);
             i = -1;
             break;
@@ -104,13 +109,25 @@ void Salesman::salesman_enter(list<Salesman>& l, Queue& q)
     }
     if (it == l.end()) {
         cout << "Logon failed. Incorrect login or password." << endl;
+        system("pause");
     }
 }
 
-template <typename T>
-void Salesman::menu(list<Salesman>& l, T& queue) {
+string Salesman::Hash(string& password)
+{
+    int const DIFF = 23;
+    string total = "";
+    for (int i = 0; i < password.length(); i++) {
+        total += char(password[i] + DIFF);
+    }
+    return total;
+}
+
+
+void Salesman::menu(list<Salesman>& l, Queue& queue) {
     int flag = 1;
     while (flag) {
+        system("cls");
         cout << "1.Service a client\n"
             << "2.Print queue\n"
             << "3.Print current salary\n"
@@ -121,22 +138,31 @@ void Salesman::menu(list<Salesman>& l, T& queue) {
         cin >> flag;
         switch (flag) {
         case 1:
-            queue.service();
+            Buyer::service(queue);
+            system("pause");
+            service_clients++;
             break;
         case 2:
-            queue.print();
+            Buyer::print_queue(queue);
+            system("pause");
             break;
         case 3:
+            salary = service_clients * 50;
             cout << "Current salary is: " << this->get_salary() << '\n';
+            system("pause");
             break;
         case 4:
-            queue.service_all();
+            service_clients += queue.size();
+            Buyer::service_all(queue);
+            system("pause");
             break;
         case 5:
             getFire(l);
             flag = 0;
+            system("pause");
             break;
         case 0:
+            system("cls");
             break;
         default:
             cout << "Entered index is incorrect" << endl;

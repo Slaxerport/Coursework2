@@ -122,3 +122,4 @@ double Product::get_price()
 {
     return price;
 }
+

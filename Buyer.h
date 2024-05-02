@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Product.h"
+#include "Queue.h"
 
 using namespace std;
-
 
 class List {
     Product** purshaces_list = nullptr;
@@ -15,17 +14,16 @@ public:
     void erase(int index);
     double get_sum();
     Product** get_purshaces_list();
+    int get_size();
 
     ~List();
 };
 class Buyer
 {
-    void print_purshaces();
-    void push_to_list(Product* temp);
 protected:
     string name = "";
     double money = 0;
-    List* p_list = nullptr;
+    List* p_list = new List;
 public:
     
     Buyer() {};
@@ -38,8 +36,11 @@ public:
     double get_money();
     List* get_list();
     double get_sum();
-
-    void menu(int queue, string path); // solve a queue problem
+    static void service(Queue& queue);
+    static void service_all(Queue& queue);
+    static void print_queue(Queue& queue);
+    void menu(Queue& queue, string path); 
     
+    bool operator ==(const Buyer& b);
 };
 

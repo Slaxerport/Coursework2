@@ -1,5 +1,10 @@
 #include "Buyer.h"
 
+bool Buyer::operator==(const Buyer& b)
+{
+	return name == b.name && money == b.money && p_list == b.p_list;
+}
+
 Buyer::Buyer(string path)
 {
 	ifstream in(path);
@@ -63,14 +68,42 @@ double Buyer::get_sum()
 	return p_list->get_sum();
 }
 
-void Buyer::print_purshaces()
+void Buyer::service(Queue& queue)
 {
-	p_list->print();
+	if (!(queue.size())) {
+		cout << "Queue is empty" << endl;
+		return;
+	}
+	if (queue.get_tail()->info->get_money() < queue.get_tail()->info->get_list()->get_sum()) {
+		cout << "Buyer " << queue.get_tail()->info->get_name() << " does not have enough money to pay his purshaces and has been deleted from the queue." << endl;
+	}
+	queue.pop_front();
 }
 
-void Buyer::push_to_list(Product* temp)
+void Buyer::service_all(Queue& queue)
 {
-	p_list->push(temp);
+	int const SIZE = queue.size();
+	if (!SIZE) {
+		cout << "Queue is empty" << endl;
+		return;
+	}
+	for (int i = 0; i < SIZE; i++) {
+		service(queue);
+	}
+}
+
+void Buyer::print_queue(Queue& queue)
+{
+	int const SIZE = queue.size();
+	if (!SIZE) {
+		cout << "Queue is empty" << endl;
+		return;
+	}
+	Node* temp = queue.get_head();
+	for (int i = 0; i < SIZE; i++) {
+		cout << temp->info->get_name() << endl;
+		temp = temp->prev;
+	}
 }
 
 void List::push(Product* temp)
@@ -118,14 +151,25 @@ void List::push(string path)
 
 void List::print()
 {
+	if (purshaces_list == nullptr) {
+		cout << "Purshaces list is empty" << endl;
+		return;
+	}
 	for (int i = 0; i < size; i++) {
 		purshaces_list[i]->get_info();
+		cout << endl;
 	}
 }
 
 void List::erase(int index)
 {
 	Product** del = purshaces_list;
+	if (!(size-1)) {
+		purshaces_list = nullptr;
+		delete del;
+		size = 0;
+		return;
+	}
 	Product** list = new Product*[size + 1];
 	int i = 0;
 	for (; i < index; i++) {
@@ -152,60 +196,113 @@ Product** List::get_purshaces_list()
 {
 	return purshaces_list;
 }
-
-//void Buyer::menu(int queue, string path)
-//{
-//	int flag = 1;
-//	cout << "1.Get in queue\n"
-//		<< "2.Get length of queue\n"
-//		<< "3.Print list of purshaces\n"
-//		<< "4.Add product from file\n"
-//		<< "5.Add product from console\n"
-//		<< "5.Delete product\n"
-//		<< "6.Get a sum of purshaces prices\n"
-//		<< "0.Exit\n";
-//	while (flag) {
-//		cout << "Choose menu item: ";
-//		cin >> flag;
-//		switch (flag) {
-//		case 1:
-//			queue.push(this);
-//			break;
-//		}
-//		case 2:
-//			queue.length();
-//			break;
-//		case 3:
-//			print_purshaces();
-//			break;
-//		case 4:
-//			ifstream in(path);
-//			Product* temp = new Product;
-//			temp->input_from_file(in);
-//			push_to_list(temp);
-//			break;
-//		case 5:
-//			Product * temp = new Product;
-//			temp->console_input();
-//			push_to_list(temp);
-//			break;
-//		case 6:
-//			int x;
-//			cout << "Enter index of deleting product";
-//			cin >> x;
-//			p_list->erase(x);
-//			break;
-//		case 7:
-//			cout << "Sum of purshaces list is: ";
-//			p_list->get_sum();
-//			break;
-//		case 0:
-//			break;
-//		default:
-//			cout << "Entered index is incorrect" << endl;
-//	}
-//
-//}
+int List::get_size()
+{
+	return size;
+}
+void Buyer::menu(Queue& queue, string path)
+{
+	int flag = 1;
+	ifstream in(path);
+	string parameter;
+	while (flag) {
+		system("cls");
+		cout << "1.Get in queue\n"
+			<< "2.Get length of queue\n"
+			<< "3.Print list of purshaces\n"
+			<< "4.Add product from file\n"
+			<< "5.Add product from console\n"
+			<< "6.Delete product\n"
+			<< "7.Get a sum of purshaces prices\n"
+			<< "0.Exit\n";
+		cout << "Choose menu item: ";
+		cin >> flag;
+		cout << endl;
+		switch (flag) {
+		case 1:
+			queue.push(this);
+			system("pause");
+			break;
+		case 2:
+			cout << "Length of queue is: " << queue.length() << endl;
+			system("pause");
+			break;
+		case 3:
+			p_list->print();
+			system("pause");
+			break;
+		case 4:
+			in >> parameter;
+			if (parameter == "Bread") {
+				Bread* b = new Bread;
+				b->input_from_file(in);
+				p_list->push(b);
+			}
+			else if (parameter == "Milk") {
+				Milk* m = new Milk;
+				m->input_from_file(in);
+				p_list->push(m);
+			}
+			else if (parameter == "Cake") {
+				Cake* c = new Cake;
+				c->input_from_file(in);
+				p_list->push(c);
+			}
+			cout << "Product is added to purshaces list" << endl;
+			system("pause");
+			break;
+		case 5:
+			cout << "Enter a type of product: ";
+			cin >> parameter;
+			if (parameter == "Bread") {
+				Bread* b = new Bread;
+				b->console_input();
+				p_list->push(b);
+			}
+			else if (parameter == "Milk") {
+				Milk* m = new Milk;
+				m->console_input();
+				p_list->push(m);
+			}
+			else if (parameter == "Cake") {
+				Cake* c = new Cake;
+				c->console_input();
+				p_list->push(c);
+			}
+			system("pause");
+			break;
+		case 6:
+			int x;
+			p_list->print();
+			cout << "Enter index of deleting product: ";
+			cin >> x;
+			if (x >= p_list->get_size() || x<0) {
+				cout << "There are no purchaces with that index" << endl;
+				system("pause");
+				break;
+			}
+			p_list->erase(x);
+			cout << "Product is deleted" << endl;
+			system("pause");
+			break;
+		case 7:
+			cout << "Sum of purshaces list is: ";
+			if (p_list->get_purshaces_list() == nullptr) {
+				cout << 0 << endl;
+				system("pause");
+				break;
+			}
+			cout << p_list->get_sum() << endl;
+			system("pause");
+			break;
+		case 0:
+			system("cls");
+			break;
+		default:
+			cout << "Entered index is incorrect" << endl;
+		}
+	}
+}
 
 List::~List()
 {

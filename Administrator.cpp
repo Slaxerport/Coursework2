@@ -60,6 +60,7 @@ void Administrator::file_input(string path)
 		else if (ignore == "Money:") in >> money;
 		else if (ignore == "Salary:") in >> salary;
 	}
+	hash = Hash(password);
 	in.close();
 }
 
@@ -71,7 +72,7 @@ Administrator* Administrator::administrator_enter(Administrator& admin)
 		cin >> login;
 		cout << "Enter password: ";
 		cin >> password;
-		if ((login == admin.login) && (password == admin.password)) {
+		if ((login == admin.login) && (Hash(password) == admin.hash)) {
 			cout << "Logon successful!" << endl;
 			return &admin;
 		}

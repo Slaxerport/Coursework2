@@ -1,5 +1,6 @@
 #include "Queue.h"
 
+
 void Queue::pop_front()
 {
 	if (head == nullptr) {
@@ -9,6 +10,7 @@ void Queue::pop_front()
 	if (head == tail) {
 		head = tail = nullptr;
 		delete del;
+		return;
 	}
 	Node* n_head = head->prev;
 	n_head->next = nullptr;
@@ -29,10 +31,17 @@ int Queue::size()
 	}
 	return count;
 }
-
-Node* Queue::end()
+template <typename T>
+bool Queue::find(const T& b)
 {
-	return tail;
+	Node* temp = head;
+	while (temp != nullptr) {
+		if (temp->info == b) {
+			return true;
+		}
+		temp = temp->next;
+	}
+	return false;
 }
 
 Queue::Queue()
@@ -42,20 +51,25 @@ Queue::Queue()
 
 void Queue::push(Buyer* buyer)
 {
+	if (find(buyer)) {
+		cout << "Buyer is already in queue" << endl;
+		return;
+	}
 	Node* temp = new Node;
-	temp->info->set_name(buyer->get_name());
-	temp->info->set_money(buyer->get_money());
-	temp->info->set_list(buyer->get_list());
+	temp->info = buyer;
 	if (head == nullptr) {
 		temp->next = temp->prev = nullptr;
 		head = tail = temp;
+		cout << "Buyer is pushed in the queue" << endl;
 		return;
 	}
 	temp->next = tail;
 	temp->prev = nullptr;
 	tail->prev = temp;
 	tail = temp;
+	cout << "Buyer is pushed in the queue" << endl;
 }
+
 int Queue::length()
 {
 	int length = 0;
@@ -67,30 +81,26 @@ int Queue::length()
 	return length;
 }
 
-void Queue::service()
+
+Node* Queue::get_head()
 {
-	if (end()->info->get_money() < end()->info->get_list()->get_sum()) {
-		cout << "Buyer " << end()->info->get_name() << " does not have enough money to pay his purshaces and has been deleted from the queue." << endl;
-	}
-	pop_front();
+	return head;
 }
 
-void Queue::print()
+Node* Queue::get_tail()
 {
-	int const SIZE = size();
-	Node* temp = head;
-	for (int i = 0; i < SIZE; i++) {
-		cout << temp->info->get_name() << endl;
-		temp = temp->prev;
-	}
+	return tail;
 }
 
-void Queue::service_all()
-{
-	int const SIZE = size();
-	for (int i = 0; i < SIZE; i++) {
-		service();
-	}
-}
+//void Queue::set_head(Node* head)
+//{
+//	this->head = head;
+//}
+//
+//void Queue::set_tail(Node* tail)
+//{
+//	this->tail = tail;
+//}
+
 
 
