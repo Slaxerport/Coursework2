@@ -3,6 +3,7 @@
 class Salesman : public Buyer
 {
 	void getFire(list<Salesman>& l);
+	static void file_input(list<Salesman>& l, ifstream& in);
 protected:
 	string login = "";
 	string password = "";
@@ -12,7 +13,7 @@ protected:
 public:
 	double get_salary();
 	void input_info(list<Salesman>& l);
-	void file_input(list<Salesman>& l, string path);
+	
 	static Salesman* create_account(list<Salesman>& l);
 	string get_login();
 	string get_password();
@@ -22,7 +23,7 @@ public:
 	static void salesman_enter(list<Salesman>& l, Queue& q);
 	static string Hash(string& password);
 	void menu(list<Salesman>& l, Queue& queue);
-	
+	static void input_salesmen(list<Salesman>& l, string path);
 
 	bool operator ==(const Salesman& temp);
 };

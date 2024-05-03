@@ -20,14 +20,13 @@ public:
 };
 class Buyer
 {
+    Buyer(string& path);
 protected:
     string name = "";
     double money = 0;
     List* p_list = new List;
 public:
-    
     Buyer() {};
-    Buyer(string path);
     
     void set_name(const string& name);
     void set_money(const int& money);
@@ -39,8 +38,10 @@ public:
     static void service(Queue& queue);
     static void service_all(Queue& queue);
     static void print_queue(Queue& queue);
-    void menu(Queue& queue, string path); 
-    
+    void menu(Queue& queue, string path);
+    static void input_buyers(list<Buyer>& l, string path);
+    static void buyer_enter(Queue& queue, list<Buyer>& l, string path);
+
     bool operator ==(const Buyer& b);
 };
 

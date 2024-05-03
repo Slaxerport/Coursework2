@@ -30,21 +30,21 @@ void Salesman::getFire(list<Salesman>& l)
     cout << "Salesman is not in worker list already" << endl;
 }
 
-void Salesman::file_input(list<Salesman>& l, string path)
+void Salesman::file_input(list<Salesman>& l, ifstream& in)
 {
+    Salesman s;
     string ignore;
-    ifstream in(path);
-    while (!in.eof()) {
+    while (1) {
         in >> ignore;
-        if(ignore=="Login:") in >> login;
-        else if(ignore=="Password:") in >> password;
-        else if(ignore=="Money:") in >> money;
-        else if(ignore=="Serviced") in >> ignore >> service_clients;
-        hash = Hash(password);
-        salary = service_clients * 50;
+        if (ignore == "Login:") in >> s.login;
+        else if (ignore == "Password:") in >> s.password;
+        else if (ignore == "Money:") in >> s.money;
+        else if (ignore == "Serviced") in >> ignore >> s.service_clients;
+        else if (ignore == "\n") break;
     }
-    in.close();
-    l.push_back(*this);
+    s.hash = Hash(s.password);
+    s.salary = s.service_clients * 50;
+    l.push_back(s);
 }
 
 Salesman* Salesman::create_account(list<Salesman>& l)
@@ -167,6 +167,14 @@ void Salesman::menu(list<Salesman>& l, Queue& queue) {
         default:
             cout << "Entered index is incorrect" << endl;
         }
+    }
+}
+
+void Salesman::input_salesmen(list<Salesman>& l, string path)
+{
+    ifstream in(path);
+    while(!in.eof()){
+        file_input(l, in);
     }
 }
 

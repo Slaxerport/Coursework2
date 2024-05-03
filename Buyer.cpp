@@ -5,12 +5,12 @@ bool Buyer::operator==(const Buyer& b)
 	return name == b.name && money == b.money && p_list == b.p_list;
 }
 
-Buyer::Buyer(string path)
+Buyer::Buyer(string& path)
 {
 	ifstream in(path);
 	string ignore;
 	p_list = new List;
-	while (!in.eof()) {
+	while (1) {
 		in >> ignore >> name; // ignoring name-sign
 		in >> ignore >> money; // ignoring money-sign
 		in >> ignore;
@@ -29,6 +29,7 @@ Buyer::Buyer(string path)
 			n_product->input_from_file(in);
 			p_list->push(n_product);
 		}
+		else if (ignore == "\n") break;
 	}
 	in.close();
 }
@@ -300,6 +301,28 @@ void Buyer::menu(Queue& queue, string path)
 			break;
 		default:
 			cout << "Entered index is incorrect" << endl;
+		}
+	}
+}
+
+void Buyer::input_buyers(list<Buyer>& l, string path)
+{
+	ifstream in(path);
+	while (!in.eof()) {
+		Buyer b(path);
+		l.push_back(b);
+	}
+}
+
+void Buyer::buyer_enter(Queue& queue, list<Buyer>& l, string path)
+{
+	string login;
+	cout << "Enter a login: ";
+	cin >> login;
+	for (auto it : l) {
+		if (it.name == login) {
+			it.menu(queue, path);
+			return;
 		}
 	}
 }

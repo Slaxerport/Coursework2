@@ -1,7 +1,6 @@
 ﻿#include "Administrator.h"
 
-Buyer buyer("Input_buyer.txt");
-Salesman salesman;
+list<Buyer> buyers_list;
 Administrator administrator;
 Queue buyers_queue;
 list<Salesman> salesmen_list;
@@ -26,7 +25,7 @@ int main()
     cout << b.get_sum();*/
    
     
-    salesman.file_input(salesmen_list, "Input.txt");
+    Salesman::input_salesmen(salesmen_list, "Input.txt");
     administrator.file_input("Input_admin.txt");
     enter_menu();
 }
@@ -36,7 +35,6 @@ void enter_menu()
     int x = 1;
     string login, password;
     list<Salesman>::iterator it = salesmen_list.begin();
-    Buyer b("Input_buyer.txt");
     while (x) {
         system("cls");
         cout << "1.Enter as a buyer\n"
@@ -47,7 +45,7 @@ void enter_menu()
         cin >> x;
         switch (x) {
         case 1:
-            b.menu(buyers_queue, "product_input.txt");
+            Buyer::buyer_enter(buyers_queue, buyers_list, "product_input.txt");
             break;
         case 2:
             Salesman::salesman_enter(salesmen_list, buyers_queue);
