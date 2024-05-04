@@ -5,10 +5,15 @@ double Salesman::get_salary()
     return salary;
 }
 
+void Salesman::set_salary(double salary)
+{
+    this->salary = salary;
+}
+
 void Salesman::input_info(list<Salesman>& l)
 {
     cout << "Enter a login: ";
-    cin >> login; 
+    cin >> name; 
     cout << "Enter a password: ";
     cin >> password;
     cout << "Enter amount of money: ";
@@ -23,6 +28,7 @@ void Salesman::getFire(list<Salesman>& l)
     while (it!=l.end()) {
         if ((*it) == *this) {
             l.erase(it);
+            cout << "Salesman is fired" << endl;
             return;
         }
         it++;
@@ -35,12 +41,12 @@ void Salesman::file_input(list<Salesman>& l, ifstream& in)
     Salesman s;
     string ignore;
     while (1) {
+        if (in.get() == '\n' || in.eof()) break;
         in >> ignore;
-        if (ignore == "Login:") in >> s.login;
+        if (ignore == "Login:") in >> s.name;
         else if (ignore == "Password:") in >> s.password;
         else if (ignore == "Money:") in >> s.money;
         else if (ignore == "Serviced") in >> ignore >> s.service_clients;
-        else if (ignore == "\n") break;
     }
     s.hash = Hash(s.password);
     s.salary = s.service_clients * 50;
@@ -63,7 +69,7 @@ Salesman* Salesman::create_account(list<Salesman>& l)
 
 string Salesman::get_login()
 {
-    return login;
+    return name;
 }
 
 string Salesman::get_password()
@@ -71,9 +77,14 @@ string Salesman::get_password()
     return password;
 }
 
+int Salesman::get_service_clients()
+{
+    return service_clients;
+}
+
 void Salesman::set_login(string& login)
 {
-    this->login = login;
+    this->name = login;
 }
 
 void Salesman::set_password(string& password)
@@ -85,7 +96,7 @@ string Salesman::get_hash()
 {
     return hash;
 }
-void Salesman::salesman_enter(list<Salesman>& l, Queue& q)
+void Salesman::salesman_enter(list<Salesman>& l, queue<Buyer>& q)
 {
     string login, password;
     int i = 0;
@@ -95,14 +106,13 @@ void Salesman::salesman_enter(list<Salesman>& l, Queue& q)
     cout << "Enter password: ";
     cin >> password;
     for (; it != l.end(); i++, it++) {
-        if ((login == (*it).login) && (Salesman::Hash(password) == (*it).get_hash())) {
+        if ((login == (*it).name) && (Salesman::Hash(password) == (*it).get_hash())) {
             cout << "Logon successful!" << endl;
             system("pause");
             it->menu(l, q);
             i = -1;
             break;
         }
-        it++;
     }
     if (i == -1) {
         return;
@@ -124,8 +134,8 @@ string Salesman::Hash(string& password)
 }
 
 
-void Salesman::menu(list<Salesman>& l, Queue& queue) {
-    int flag = 1;
+void Salesman::menu(list<Salesman>& l, queue<Buyer>& queue) {
+    int flag = 1, t;
     while (flag) {
         system("cls");
         cout << "1.Service a client\n"
@@ -138,16 +148,16 @@ void Salesman::menu(list<Salesman>& l, Queue& queue) {
         cin >> flag;
         switch (flag) {
         case 1:
-            Buyer::service(queue);
+            t = Buyer::service(queue);
+            service_clients += t;
+            salary += t * 50.0;
             system("pause");
-            service_clients++;
             break;
         case 2:
             Buyer::print_queue(queue);
             system("pause");
             break;
         case 3:
-            salary = service_clients * 50;
             cout << "Current salary is: " << this->get_salary() << '\n';
             system("pause");
             break;
@@ -159,6 +169,7 @@ void Salesman::menu(list<Salesman>& l, Queue& queue) {
         case 5:
             getFire(l);
             flag = 0;
+
             system("pause");
             break;
         case 0:
@@ -166,6 +177,7 @@ void Salesman::menu(list<Salesman>& l, Queue& queue) {
             break;
         default:
             cout << "Entered index is incorrect" << endl;
+            system("pause");
         }
     }
 }
@@ -175,6 +187,17 @@ void Salesman::input_salesmen(list<Salesman>& l, string path)
     ifstream in(path);
     while(!in.eof()){
         file_input(l, in);
+    }
+}
+
+void Salesman::output(list<Salesman>& l, string path)
+{
+    ofstream out(path);
+    for (auto el : l) {
+        out << " Name: " << el.name
+            << " Money: " << el.money
+            << " Serviced clients: " << el.service_clients;
+        out << endl;
     }
 }
 

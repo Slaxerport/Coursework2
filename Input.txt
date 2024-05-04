@@ -1,1 +1,3 @@
-Login: dh3 Password: 123 Money: 234.56 Serviced clients: 3
+ Login: dh3 Password: 123 Money: 234.56 Serviced clients: 3
+ Login: sman1 Password: 321 Money: 123.67 Serviced clients: 5
+ Login: sman2 Password: 456 Money: 1377.9 Serviced clients: 1

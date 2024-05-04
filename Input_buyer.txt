@@ -1,1 +1,2 @@
-Name: Tom Money: 294.45 Milk Name Savushkin Price 356.93 Sort White Fat percentage 3.2% Volume 2.0
+ Name: Tom Money: 294.45 Milk Name: Savushkin Price: 356.93 Sort: White Fat percentage: 3.2% Volume: 2.0
+ Name: Sam Money: 974.21 Milk Name: Cream Price: 213.45 Sort: Hot Fat percentage: 8% Volume: 2.0 Bread Name: Narachanckiy Price: 12.67 Color: Black Mass: 2.5

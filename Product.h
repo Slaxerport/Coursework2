@@ -3,6 +3,7 @@
 #include <string>
 #include <list>
 #include <fstream>
+#include <queue>
 
 using namespace std;
 
@@ -14,6 +15,7 @@ public:
     virtual void get_info() = 0;
     virtual void input_from_file(ifstream& in) = 0;
     virtual void console_input() = 0;
+    virtual void info_to_file(ofstream& out) = 0;
     double get_price();
 };
 class Milk : public Product {
@@ -27,6 +29,7 @@ public:
     void get_info() override;
     void input_from_file(ifstream& in) override;
     void console_input() override;
+    void info_to_file(ofstream& out) override;
 };
 class Bread : public Product {
     string color = "";
@@ -38,6 +41,7 @@ public:
     void get_info() override;
     void input_from_file(ifstream& in) override;
     void console_input() override;
+    void info_to_file(ofstream& out) override;
 };
 class Cake : public Product {
     string filling = "";
@@ -49,6 +53,7 @@ public:
     void get_info() override;
     void input_from_file(ifstream& in) override;
     void console_input() override;
+    void info_to_file(ofstream& out) override;
 };
 
 

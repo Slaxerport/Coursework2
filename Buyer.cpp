@@ -5,14 +5,14 @@ bool Buyer::operator==(const Buyer& b)
 	return name == b.name && money == b.money && p_list == b.p_list;
 }
 
-Buyer::Buyer(string& path)
+Buyer::Buyer(ifstream& in)
 {
-	ifstream in(path);
 	string ignore;
 	p_list = new List;
+	in >> ignore >> name; // ignoring name-sign
+	in >> ignore >> money; // ignoring money-sign
 	while (1) {
-		in >> ignore >> name; // ignoring name-sign
-		in >> ignore >> money; // ignoring money-sign
+		if (in.get() == '\n' || in.eof()) break;
 		in >> ignore;
 		if (ignore == "Milk") {
 			Milk* n_product = new Milk;
@@ -29,9 +29,17 @@ Buyer::Buyer(string& path)
 			n_product->input_from_file(in);
 			p_list->push(n_product);
 		}
-		else if (ignore == "\n") break;
 	}
-	in.close();
+}
+
+bool Buyer::find(queue<Buyer>& q, Buyer& temp)
+{
+	queue<Buyer> temp_q = q;
+	for (int i = 0; i < q.size(); i++) {
+		if (temp_q.front() == temp) return true;
+		temp_q.pop();
+	}
+	return false;
 }
 
 void Buyer::set_name(const string& name)
@@ -39,7 +47,7 @@ void Buyer::set_name(const string& name)
 	this->name = name;
 }
 
-void Buyer::set_money(const int& money)
+void Buyer::set_money(const double& money)
 {
 	this->money = money;
 }
@@ -69,19 +77,23 @@ double Buyer::get_sum()
 	return p_list->get_sum();
 }
 
-void Buyer::service(Queue& queue)
+int Buyer::service(queue<Buyer>& queue)
 {
 	if (!(queue.size())) {
 		cout << "Queue is empty" << endl;
-		return;
+		return 0;
 	}
-	if (queue.get_tail()->info->get_money() < queue.get_tail()->info->get_list()->get_sum()) {
-		cout << "Buyer " << queue.get_tail()->info->get_name() << " does not have enough money to pay his purshaces and has been deleted from the queue." << endl;
+	if (queue.front().get_money() < queue.front().get_list()->get_sum()) {
+		cout << "Buyer " << queue.front().get_name() << " does not have enough money to pay his purshaces and has been deleted from the queue." << endl;
 	}
-	queue.pop_front();
+	else {
+		cout << "Buyer is serviced" << endl;
+	}
+	queue.pop();
+	return 1;
 }
 
-void Buyer::service_all(Queue& queue)
+void Buyer::service_all(queue<Buyer>& queue)
 {
 	int const SIZE = queue.size();
 	if (!SIZE) {
@@ -93,17 +105,16 @@ void Buyer::service_all(Queue& queue)
 	}
 }
 
-void Buyer::print_queue(Queue& queue)
+void Buyer::print_queue(queue<Buyer>& q)
 {
-	int const SIZE = queue.size();
+	int const SIZE = q.size();
 	if (!SIZE) {
 		cout << "Queue is empty" << endl;
-		return;
 	}
-	Node* temp = queue.get_head();
+	queue<Buyer> temp = q;
 	for (int i = 0; i < SIZE; i++) {
-		cout << temp->info->get_name() << endl;
-		temp = temp->prev;
+		cout << temp.front().get_name() << endl;
+		temp.pop();
 	}
 }
 
@@ -201,7 +212,7 @@ int List::get_size()
 {
 	return size;
 }
-void Buyer::menu(Queue& queue, string path)
+void Buyer::menu(queue<Buyer>& q, string path)
 {
 	int flag = 1;
 	ifstream in(path);
@@ -221,11 +232,17 @@ void Buyer::menu(Queue& queue, string path)
 		cout << endl;
 		switch (flag) {
 		case 1:
-			queue.push(this);
+			if (Buyer::find(q, *this)) {
+				cout << "Buyer is already in the queue" << endl;
+			}
+			else {
+				q.push(*this);
+				cout << "Buyer is pushed to queue" << endl;
+			}
 			system("pause");
 			break;
 		case 2:
-			cout << "Length of queue is: " << queue.length() << endl;
+			cout << "Length of queue is: " << q.size() << endl;
 			system("pause");
 			break;
 		case 3:
@@ -301,6 +318,7 @@ void Buyer::menu(Queue& queue, string path)
 			break;
 		default:
 			cout << "Entered index is incorrect" << endl;
+			system("pause");
 		}
 	}
 }
@@ -309,21 +327,40 @@ void Buyer::input_buyers(list<Buyer>& l, string path)
 {
 	ifstream in(path);
 	while (!in.eof()) {
-		Buyer b(path);
+		Buyer b(in);
 		l.push_back(b);
 	}
+	in.close();
 }
 
-void Buyer::buyer_enter(Queue& queue, list<Buyer>& l, string path)
+void Buyer::buyer_enter(queue<Buyer>& queue, list<Buyer>& l, string path)
 {
+	system("cls");
 	string login;
 	cout << "Enter a login: ";
 	cin >> login;
 	for (auto it : l) {
 		if (it.name == login) {
+			cout << "Logon succesful!" << endl;
+			system("pause");
 			it.menu(queue, path);
 			return;
 		}
+	}
+	cout << "Incorrect login. Try again" << endl;
+	system("pause");
+	return buyer_enter(queue, l, path);
+}
+
+void Buyer::output(list<Buyer> l, string path)
+{
+	ofstream out(path);
+	for (auto it : l) {
+		out << "Name: " << it.name << " Money: " << it.money << ' ';
+		for (int i = 0; i < it.get_list()->get_size(); i++) {
+			it.get_list()->get_purshaces_list()[i]->info_to_file(out);
+		}
+		out << endl;
 	}
 }
 

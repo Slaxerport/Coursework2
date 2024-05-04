@@ -1,1 +1,1 @@
-Bread Name Narachanskiy Color Black Price 34.6  Mass 39.5
+Bread Name: Narachanskiy Color: Black Price: 34.6 Mass: 39.5

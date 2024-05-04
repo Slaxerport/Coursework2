@@ -1,27 +1,25 @@
 #pragma once
 #include "Product.h"
 
-class Buyer;
-
+template<typename T>
 struct Node {
-    Buyer* info;
-    Node* next;
-    Node* prev;
+    T* info;
+    Node<T>* next;
+    Node<T>* prev;
 };
+template<typename T>
 class Queue
 {
-    Node* head;
-    Node* tail;
+    Node<T>* head;
+    Node<T>* tail;
     
-    template <typename T>
     bool find(const T& b);
 public:
     Queue();
-    int size();
     void pop_front();
-    void push(Buyer* buyer);
+    void push(T* buyer);
     int length();
-    Node* get_head();
-    Node* get_tail();
+    Node<T>* get_head();
+    Node<T>* get_tail();
 };
 

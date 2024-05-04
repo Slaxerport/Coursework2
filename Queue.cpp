@@ -1,61 +1,50 @@
 #include "Queue.h"
 
-
-void Queue::pop_front()
+template<typename T>
+void Queue<T>::pop_front()
 {
 	if (head == nullptr) {
 		return;
 	}
-	Node* del = head;
+	Node<T>* del = head;
 	if (head == tail) {
 		head = tail = nullptr;
 		delete del;
 		return;
 	}
-	Node* n_head = head->prev;
+	Node<T>* n_head = head->prev;
 	n_head->next = nullptr;
 	head = n_head;
-	if (size() == 2) {
+	if (this->size() == 2) {
 		tail = head;
 	}
 	delete del;
 }
-
-int Queue::size()
-{
-	int count = 0;
-	Node* temp = head;
-	while (temp != nullptr) {
-		count++;
-		temp = temp->prev;
-	}
-	return count;
-}
-template <typename T>
-bool Queue::find(const T& b)
+template<typename T>
+bool Queue<T>::find(const T& b)
 {
 	Node* temp = head;
 	while (temp != nullptr) {
 		if (temp->info == b) {
 			return true;
 		}
-		temp = temp->next;
+		temp = temp->prev;
 	}
 	return false;
 }
-
-Queue::Queue()
+template<typename T>
+Queue<T>::Queue()
 {
 	head = tail = nullptr;
 }
-
-void Queue::push(Buyer* buyer)
+template<typename T>
+void Queue<T>::push(T* buyer)
 {
 	if (find(buyer)) {
 		cout << "Buyer is already in queue" << endl;
 		return;
 	}
-	Node* temp = new Node;
+	Node<T>* temp = new Node<T>;
 	temp->info = buyer;
 	if (head == nullptr) {
 		temp->next = temp->prev = nullptr;
@@ -65,15 +54,14 @@ void Queue::push(Buyer* buyer)
 	}
 	temp->next = tail;
 	temp->prev = nullptr;
-	tail->prev = temp;
 	tail = temp;
 	cout << "Buyer is pushed in the queue" << endl;
 }
-
-int Queue::length()
+template<typename T>
+int Queue<T>::length()
 {
 	int length = 0;
-	Node* temp = head;
+	Node<T>* temp = head;
 	while (temp != nullptr) {
 		++length;
 		temp = temp->prev;
@@ -81,26 +69,16 @@ int Queue::length()
 	return length;
 }
 
-
-Node* Queue::get_head()
+template<typename T>
+Node<T>* Queue<T>::get_head()
 {
 	return head;
 }
-
-Node* Queue::get_tail()
+template<typename T>
+Node<T>* Queue<T>::get_tail()
 {
 	return tail;
 }
-
-//void Queue::set_head(Node* head)
-//{
-//	this->head = head;
-//}
-//
-//void Queue::set_tail(Node* tail)
-//{
-//	this->tail = tail;
-//}
 
 
 

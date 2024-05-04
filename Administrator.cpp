@@ -29,24 +29,30 @@ void Administrator::fire(list<Salesman>& l)
 	list<Salesman>::iterator it = l.begin();
 	cout << "Enter a number of salesman: ";
 	cin >> x;
+	if (x<0 || x>l.size()) {
+		cout << "There are no salesmen with that index" << endl;
+		return;
+	}
 	advance(it, x);
 	l.erase(it);
+	cout << "Salesman is fired" << endl;
 }
 
 void Administrator::assign_bonus(list<Salesman>& l)
 {
-	int max = -1, salary, index, i = 0;;
+	int max = -1, salary, index, i = 0, s_clients;
 	list<Salesman>::iterator it = l.begin();
 	for (list<Salesman>::iterator it = l.begin(); it != l.end(); it++, i++) {
-		salary = (*it).get_salary();
-		if (salary > max) {
-			max = salary;
+		s_clients = (*it).get_service_clients();
+		if (s_clients > max) {
+			max = s_clients;
 			index = i;
 		}
 	}
-	int m = (l.size() - index - 1);
-	advance(it, -m);
-	(*it).set_money((*it).get_money() + 250);
+	it = l.begin();
+	advance(it, index);
+	(*it).set_salary((*it).get_salary() + 250.0);
+	cout << "Bonus is assigned" << endl;
 }
 
 void Administrator::file_input(string path)
@@ -55,7 +61,7 @@ void Administrator::file_input(string path)
 	ifstream in(path);
 	while (!in.eof()) {
 		in >> ignore;
-		if (ignore == "Login:") in >> login;
+		if (ignore == "Login:") in >> name;
 		else if (ignore == "Password:") in >> password;
 		else if (ignore == "Money:") in >> money;
 		else if (ignore == "Salary:") in >> salary;
@@ -72,12 +78,14 @@ Administrator* Administrator::administrator_enter(Administrator& admin)
 		cin >> login;
 		cout << "Enter password: ";
 		cin >> password;
-		if ((login == admin.login) && (Hash(password) == admin.hash)) {
+		if ((login == admin.name) && (Hash(password) == admin.hash)) {
 			cout << "Logon successful!" << endl;
+			system("pause");
 			return &admin;
 		}
 		else {
 			cout << "Logon failed. Incorrect login or password." << endl;
+			system("pause");
 		}
 	}
 }
@@ -86,6 +94,7 @@ void Administrator::menu(list<Salesman>& l)
 {
 	int flag = 1;
 	while (flag) {
+		system("cls");
 		cout << "1.Print salesmen list\n"
 			<< "2.Add new salesman\n"
 			<< "3.Change salesman\n"
@@ -97,26 +106,35 @@ void Administrator::menu(list<Salesman>& l)
 		switch (flag) {
 		case 1:
 			print_salesmen(l);
+			system("pause");
 			break;
 		case 2:
 			add_salesman(l);
+			system("pause");
 			break;
 		case 3:
 			int a;
+			print_salesmen(l);
 			cout << "Enter an index of changing salesman: ";
 			cin >> a;
 			change_salesman(l, a);
+			system("pause");
 			break;
 		case 4:
 			fire(l);
+			system("pause");
 			break;
 		case 5:
 			assign_bonus(l);
+			system("pause");
 			break;
 		case 0:
 			break;
 		default:
 			cout << "Entered index is incorrect" << endl;
+			system("pause");
 		}
 	}
 }
+
+

@@ -2,7 +2,7 @@
 
 list<Buyer> buyers_list;
 Administrator administrator;
-Queue buyers_queue;
+queue<Buyer> buyers_queue;
 list<Salesman> salesmen_list;
 
 
@@ -24,7 +24,7 @@ int main()
     b.print_purshaces();
     cout << b.get_sum();*/
    
-    
+    Buyer::input_buyers(buyers_list, "Input_buyer.txt");
     Salesman::input_salesmen(salesmen_list, "Input.txt");
     administrator.file_input("Input_admin.txt");
     enter_menu();
@@ -57,9 +57,12 @@ void enter_menu()
             Administrator::administrator_enter(administrator)->menu(salesmen_list);
             break;
         case 0:
+            Buyer::output(buyers_list, "output_buyers.txt");
+            Salesman::output(salesmen_list, "output_salesmen.txt");
             break;
         default:
             cout << "Entered index is incorrect" << endl;
+            system("pause");
         }
     }
 }

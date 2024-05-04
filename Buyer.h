@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Queue.h"
+#include "Product.h"
 
 using namespace std;
 
@@ -20,7 +20,8 @@ public:
 };
 class Buyer
 {
-    Buyer(string& path);
+    Buyer(ifstream& in);
+    static bool find(queue<Buyer>& q, Buyer& temp);
 protected:
     string name = "";
     double money = 0;
@@ -29,18 +30,19 @@ public:
     Buyer() {};
     
     void set_name(const string& name);
-    void set_money(const int& money);
+    void set_money(const double& money);
     void set_list(List* list); 
     string get_name();
     double get_money();
     List* get_list();
     double get_sum();
-    static void service(Queue& queue);
-    static void service_all(Queue& queue);
-    static void print_queue(Queue& queue);
-    void menu(Queue& queue, string path);
+    static int service(queue<Buyer>& queue);
+    static void service_all(queue<Buyer>& queue);
+    static void print_queue(queue<Buyer>& queue);
+    void menu(queue<Buyer>& q, string path);
     static void input_buyers(list<Buyer>& l, string path);
-    static void buyer_enter(Queue& queue, list<Buyer>& l, string path);
+    static void buyer_enter(queue<Buyer>& queue, list<Buyer>& l, string path);
+    static void output(list<Buyer> l, string path);
 
     bool operator ==(const Buyer& b);
 };

@@ -20,11 +20,11 @@ void Milk::input_from_file(ifstream& in)
     string parameter;
     for (int i = 0; i < 5; i++) {
         in >> parameter;
-        if (parameter == "Name") in >> name;
-        else if (parameter == "Price") in >> price;
-        else if (parameter == "Sort") in >> sort;
+        if (parameter == "Name:") in >> name;
+        else if (parameter == "Price:") in >> price;
+        else if (parameter == "Sort:") in >> sort;
         else if (parameter == "Fat") in >> parameter >> fat_percentage;
-        else if (parameter == "Volume") in >> volume;
+        else if (parameter == "Volume:") in >> volume;
     }
 }
 
@@ -40,6 +40,15 @@ void Milk::console_input()
     cin >> fat_percentage;
     cout << "Volume: ";
     cin >> volume;
+}
+
+void Milk::info_to_file(ofstream& out)
+{
+    out << "Name: " << name
+        << " Price: " << price
+        << " Sort: " << sort
+        << " Fat percentage: " << fat_percentage
+        << " Volume: " << volume << ' ';
 }
 
 Bread::Bread(string path)
@@ -61,10 +70,10 @@ void Bread::input_from_file(ifstream& in)
     string parameter;
     for (int i = 0; i < 4; i++) {
         in >> parameter;
-        if (parameter == "Name") in >> name;
-        else if (parameter == "Price") in >> price;
-        else if (parameter == "Color") in >> color;
-        else if (parameter == "Mass") in >> mass;
+        if (parameter == "Name:") in >> name;
+        else if (parameter == "Price:") in >> price;
+        else if (parameter == "Color:") in >> color;
+        else if (parameter == "Mass:") in >> mass;
     }
 }
 
@@ -78,6 +87,14 @@ void Bread::console_input()
     cin >> color;
     cout << "Mass: ";
     cin >> mass;
+}
+
+void Bread::info_to_file(ofstream& out)
+{
+    out << "Name: " << name
+        << " Price: " << price
+        << " Color: " << color
+        << " Mass: " << mass << ' ';
 }
 
 Cake::Cake(string path)
@@ -99,10 +116,10 @@ void Cake::input_from_file(ifstream& in)
     string parameter;
     for (int i = 0; i < 4; i++) {
         in >> parameter;
-        if (parameter == "Name") in >> name;
-        else if (parameter == "Price") in >> price;
-        else if (parameter == "Filling") in >> filling;
-        else if (parameter == "Base") in >> base;
+        if (parameter == "Name:") in >> name;
+        else if (parameter == "Price:") in >> price;
+        else if (parameter == "Filling:") in >> filling;
+        else if (parameter == "Base:") in >> base;
     }
 }
 
@@ -116,6 +133,14 @@ void Cake::console_input()
     cin >> filling;
     cout << "Base: ";
     cin >> base;
+}
+
+void Cake::info_to_file(ofstream& out)
+{
+    out << "Name: " << name
+        << " Price: " << price
+        << " Filling: " << filling
+        << " Base: " << base << ' ';
 }
 
 double Product::get_price()
